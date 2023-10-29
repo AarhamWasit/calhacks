@@ -10,7 +10,7 @@ document.getElementById('uploadForm').addEventListener('submit', function (e) {
         .then(data => {
             if (data.result) {
                 // If the server returns a result immediately
-                document.getElementById('result').innerHTML = 'Result: ' + data.result;
+                document.getElementById('result').innerHTML = 'Result: ' + data.result + '%';
             } else {
                 // If the result is not ready yet, start polling
                 pollForResults();
@@ -31,7 +31,7 @@ function pollForResults() {
             .then(data => {
                 if (data.result) {
                     clearInterval(intervalId); // Stop polling when result is received
-                    document.getElementById('result').innerHTML = 'Result: ' + data.result;
+                    document.getElementById('result').innerHTML = 'Result: ' + data.result + '%';
                     document.getElementById('loading').style.display = 'none'; // Hide loading indicator
                 }
             })
