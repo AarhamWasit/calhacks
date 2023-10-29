@@ -13,7 +13,7 @@ The app not only efficiently detects emotional states but identifies early indic
 
 It offers a user-friendly interface that presents weekly logs of burnout risk levels and a user friendly web dashboard of their associated emotional trends.
 
-This app builds upon Hume's video emotion detection technology to predict and prevent burnout among healthcare workers. Existing approaches in affect monitoring use frequent surveillance to profile medical practitioners' mental states, jeopardizing privacy. Our application protects privacy by recording infrequent but regular interactions with patients, with full knowledge of those involved. 
+This app builds upon Hume's video emotion detection technology to predict and prevent burnout among healthcare workers. Existing approaches use frequent surveillance to profile medical practitioners' mental states, jeopardizing privacy. Our application protects privacy by recording infrequent but regular interactions with patients, with full knowledge of those involved. 
 
 ## How we built it
 
@@ -36,7 +36,7 @@ We communicate with the database from the Flask backend as well as the python sc
 
 ## What we learned
 
-- Explored `HumeStreamClient` for WebSocket integration in Flask. We learned aboutnuances of WebSockets vs other HTTP connections.
+- Explored `HumeStreamClient` for WebSocket integration in Flask. We learned about nuances of WebSockets vs other HTTP connections.
 
 ## What's next for Burnout Monitor
 
