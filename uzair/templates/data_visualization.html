@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="static/css/style.css">
+    <title>Data Visualization</title>
+    <style>
+        /* Add any specific styles you need for this page */
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        #burnoutChart {
+            width: 80%;
+            max-width: 600px;
+            margin: 30px auto;
+        }
+    </style>
+    <!-- Include Chart.js (You can use a CDN or a local file) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <h1>Data Visualization</h1>
+    <canvas id="burnoutChart"></canvas>
+
+    <!-- Include your JavaScript file -->
+    <!-- Replace 'path/to/your_script.js' with the actual path to your JavaScript file -->
+    <script src="static/js/script.js"></script>
+
+    <script>
+        // Assuming 'generateFakeData' and 'createChart' functions are defined in your_script.js
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const fakeData = generateFakeData();
+            createChart(fakeData);
+        });
+    </script>
+</body>
+
+</html>

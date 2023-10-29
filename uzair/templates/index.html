@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Burnout Detector</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div id="binaryBackground"></div>
+    <!-- Rest of your page content goes here -->
+
+    <div class="container">
+        <h1>Burnout Detection in Medical Professionals</h1>
+        <p class="description" id="descriptionText">
+            Utilizing advanced AI algorithms, this tool analyzes visual and emotional cues
+            in photos and videos to assess burnout levels. It's designed to help healthcare
+            organizations monitor and support the well-being of their staff.
+        </p>
+        <form id="uploadForm" method="post" enctype="multipart/form-data">
+            <input type="file" name="file" accept="image/*,video/*">
+            <video id="webcamVideo" autoplay style="display: none;"></video>
+            <button id="showGraphButton" onclick="window.location.href='/data-visualization'">Data
+                Visualization</button>
+            <button type="submit">Upload Image / Video</button>
+            <button id="openWebcam">Real Time Detection</button>
+        </form>
+        <div id="loading" style="display:none;">Loading...</div>
+        <div id="result"></div>
+    </div>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+</body>
+
+</html>
