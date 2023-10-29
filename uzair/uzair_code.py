@@ -42,6 +42,12 @@ def train_model(file_paths, labels):
         pickle.dump(model, f)
 
 
+def predict2(vec):
+    with open('model.pkl', 'rb') as f:
+        model = pickle.load(f)
+        return model.predict_proba(vec)[0][1]
+
+
 def predict(file_path):
     # load
     with open('model.pkl', 'rb') as f:

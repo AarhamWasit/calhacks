@@ -1,26 +1,50 @@
 document.getElementById('uploadForm').addEventListener('submit', function (e) {
-    e.preventDefault();
+    e.preventDefault();  // Prevent the default form submission
 
-    var form = document.getElementById('uploadForm');
-    var formData = new FormData(form);
-    var loading = document.getElementById('loading');
-    var result = document.getElementById('result');
-
-    // Start Loading Animation
-    startLoadingAnimation(loading);
-
+    var formData = new FormData(this);
     fetch('/upload', {
         method: 'POST',
         body: formData
-    }).then(response => response.json())
+    })
+        .then(response => response.json())
         .then(data => {
-            stopLoadingAnimation(loading);
-            result.textContent = 'Burnout Probability: ' + data.result;
-        }).catch(error => {
-            stopLoadingAnimation(loading);
-            result.textContent = 'Error: ' + error;
+            if (data.result) {
+                // If the server returns a result immediately
+                document.getElementById('result').innerHTML = 'Result: ' + data.result;
+            } else {
+                // If the result is not ready yet, start polling
+                pollForResults();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('result').innerHTML = 'Error in processing.';
         });
+
+    document.getElementById('loading').style.display = 'block'; // Show loading indicator
 });
+
+function pollForResults() {
+    var intervalId = setInterval(() => {
+        fetch('/get-results') // Updated endpoint without the key
+            .then(response => response.json())
+            .then(data => {
+                if (data.result) {
+                    clearInterval(intervalId); // Stop polling when result is received
+                    document.getElementById('result').innerHTML = 'Result: ' + data.result;
+                    document.getElementById('loading').style.display = 'none'; // Hide loading indicator
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                clearInterval(intervalId); // Stop polling in case of error
+                document.getElementById('result').innerHTML = 'Error in retrieving results.';
+                document.getElementById('loading').style.display = 'none'; // Hide loading indicator
+            });
+    }, 5000); // Poll every 5 seconds
+}
+
+
 
 // Function to start loading animation
 function startLoadingAnimation(loadingElement) {
@@ -125,9 +149,24 @@ function getRandomBurnoutProbability() {
 }
 
 function updateBurnoutProbability() {
-    const resultElement = document.getElementById('result');
-    resultElement.textContent = 'Burnout Probability: ' + getRandomBurnoutProbability() + '%';
+    fetch('/get-latest-prediction')
+        .then(response => response.json())
+        .then(data => {
+            if (data.prediction !== undefined) {
+                // Multiply by 100 and round to 2 decimal places
+                const predictionPercentage = (data.prediction * 100).toFixed(2);
+                document.getElementById('result').textContent = 'Burnout Probability: ' + predictionPercentage + '%';
+            } else {
+                document.getElementById('result').textContent = 'Waiting for prediction...';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('result').textContent = 'Waiting for prediction....';
+        });
 }
+
+
 
 let burnoutUpdateInterval;
 
@@ -143,6 +182,9 @@ document.getElementById('openWebcam').addEventListener('click', function () {
                 updateBurnoutProbability();
                 clearInterval(burnoutUpdateInterval); // Clear any existing interval
                 burnoutUpdateInterval = setInterval(updateBurnoutProbability, 3000); // Update every 3 seconds
+
+                // Start saving frames
+                startSavingFrames(video);
             })
             .catch(function (error) {
                 console.error("Error accessing webcam: ", error);
@@ -152,6 +194,36 @@ document.getElementById('openWebcam').addEventListener('click', function () {
     }
 });
 
+function startSavingFrames(videoElement) {
+    setInterval(() => {
+        captureAndSendFrame(videoElement);
+    }, 3000); // Capture frame every 3 seconds
+}
+
+function captureAndSendFrame(videoElement) {
+    const canvas = document.createElement('canvas');
+    canvas.width = videoElement.videoWidth;
+    canvas.height = videoElement.videoHeight;
+    const context = canvas.getContext('2d');
+    context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+
+    // Convert canvas to dataURL or blob
+    canvas.toBlob(blob => {
+        const formData = new FormData();
+        formData.append('frame', blob, 'temp.jpg');
+
+        fetch('/save-frame', {
+            method: 'POST',
+            body: formData
+        }).then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok.');
+            }
+        }).catch(error => {
+            console.error('Error saving frame:', error);
+        });
+    }, 'image/jpeg');
+}
 
 
 
